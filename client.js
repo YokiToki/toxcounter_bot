@@ -69,6 +69,16 @@ TelegramClient.prototype.sendMessageChat = function (text) {
 };
 
 /**
+ * @see https://core.telegram.org/bots/api#sendsticker
+ */
+TelegramClient.prototype.sendStickerChat = function (sticker) {
+  return this.request('sendSticker', {
+    'chat_id': this.payload.message.chat.id,
+    'sticker': sticker
+  });
+};
+
+/**
  * @see https://core.telegram.org/bots/api#getwebhookinfo
  */
 TelegramClient.prototype.getWebhookInfo = function () {

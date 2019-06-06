@@ -3,4 +3,5 @@ var config = {
   dateFormat: 'DD.MM.YYYY HH:mm:ss',
   token: '', // Telegram bot token
   ssid: '', // Spreadsheet id
+  stickerId: '',
 };

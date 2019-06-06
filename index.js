@@ -33,6 +33,20 @@ function doPost(e) {
         this.sendMessageChat("Счетчик уже активирован.");
       } 
     });
+
+    bus.on(/\/flush/, function () {
+      const chatId = this.payload.message.chat.id;
+      var chatDto = db.find(chatId);
+      if (chatDto.chatId) {
+        chatDto.timestamp = moment().format(config.dateFormat);
+
+        db.update(chatDto);
+
+        this.sendStickerChat(config.stickerId);
+      } else {
+        this.sendMessageChat("Счетчик не активирован в этом чате.");
+      }
+    });
     
     client.register(bus);
     
