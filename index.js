@@ -45,22 +45,27 @@ function doPost(e) {
 /**
  * Manual actions to control webhook
  */
-
-function webhookInfo() {
-  const client = new TelegramClient(url, token, {});
+function getWebhookInfo() {
+  const client = new TelegramClient(config.url, config.token, {});
   const response = client.getWebhookInfo();
   Logger.log(response);
 }
 
 function deleteWebhook() {
-  const client = new TelegramClient(url, token, {});
+  const client = new TelegramClient(config.url, config.token, {});
   const response = client.deleteWebhook();
   Logger.log(response);
 }
 
 function setWebhook() {
-  const client = new TelegramClient(url, token, {});
+  const client = new TelegramClient(config.url, config.token, {});
   const gUrl = ScriptApp.getService().getUrl();
   const response = client.setWebhook(gUrl);
+  Logger.log(response);
+}
+
+function getUpdates() {
+  const client = new TelegramClient(config.url, config.token, {});
+  const response = client.getUpdates();
   Logger.log(response);
 }

@@ -41,12 +41,12 @@ TelegramClient.prototype.request = function (method, data) {
 
   var response = UrlFetchApp.fetch(this.url + this.token + '/' + method, options);
 
-  if (response.getResponseCode() == 200) {
+  if (response.getResponseCode() === 200) {
     return JSON.parse(response.getContentText());
   }
 
   return false;
-}
+};
 
 /**
  * @see https://core.telegram.org/bots/api#sendmessage
@@ -56,7 +56,7 @@ TelegramClient.prototype.sendMessage = function (text) {
     'chat_id': this.payload.message.from.id,
     'text': text
   });
-}
+};
 
 /**
  * @see https://core.telegram.org/bots/api#sendmessage
@@ -66,25 +66,32 @@ TelegramClient.prototype.sendMessageChat = function (text) {
     'chat_id': this.payload.message.chat.id,
     'text': text
   });
-}
+};
 
 /**
  * @see https://core.telegram.org/bots/api#getwebhookinfo
  */
 TelegramClient.prototype.getWebhookInfo = function () {
   return this.request('getWebhookInfo', {});
-}
+};
 
 /**
  * @see https://core.telegram.org/bots/api#setwebhook
  */
 TelegramClient.prototype.setWebhook = function (url) {
   return this.request('setWebhook', {url: url});
-}
+};
 
 /**
  * @see https://core.telegram.org/bots/api#deletewebhook
  */
 TelegramClient.prototype.deleteWebhook = function () {
   return this.request('deleteWebhook', {});
-}
+};
+
+/**
+ * @see https://core.telegram.org/bots/api#getupdates
+ */
+TelegramClient.prototype.getUpdates = function () {
+  return this.request('getUpdates', {});
+};
