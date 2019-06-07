@@ -32,6 +32,11 @@ TelegramClient.prototype.process = function () {
   }
 };
 
+/**
+ * @param method
+ * @param data
+ * @returns {boolean|any}
+ */
 TelegramClient.prototype.request = function (method, data) {
   var options = {
     'method': 'post',

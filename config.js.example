@@ -1,6 +1,7 @@
 var config = {
   url: 'https://api.telegram.org/bot',
-  dateFormat: 'DD.MM.YYYY HH:mm:ss',
+  dateFormat: 'DD.MM.YYYY',
+  dateTimeFormat: 'DD.MM.YYYY HH:mm:ss',
   token: '', // Telegram bot token
   ssid: '', // Spreadsheet id
   stickerId: '',
