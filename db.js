@@ -16,7 +16,7 @@ DB.prototype.find = function (id) {
   const headers = data.shift();
   var value = [];
   for (var i = 0; i < data.length; i++) {
-    if (data[i][0] == id) {
+    if ((data[i][0]).toString() === (id).toString()) {
       value = data[i];
       value.unshift(i + 2);
       break;
