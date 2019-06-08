@@ -3,7 +3,7 @@
 
 For local development, you need to install [https://github.com/google/clasp](https://github.com/google/clasp)
 ```
-npm i @ google / clasp -g
+npm i @google/clasp -g
 ```
 
 ```
