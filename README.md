@@ -25,7 +25,7 @@ Specify the ID of the google-table `ssid` used in the database.
 clasp login
 ```
 
-Include the API in [https://script.google.com/home/usersettings](hhtps://script.google.com/home/usersettings)
+Enable the API in [https://script.google.com/home/usersettings](hhtps://script.google.com/home/usersettings)
 
 ```
 clasp push
