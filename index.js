@@ -28,9 +28,9 @@ function doPost(e) {
 
         db.insert(chatDto);
 
-        this.sendMessageChat("Счетчик дней без токса активирован!");
+        this.sendMessageChat(messages.active);
       } else {
-        this.sendMessageChat("Счетчик уже активирован.");
+        this.sendMessageChat(messages.alreadyActive);
       }
     });
 
@@ -50,7 +50,7 @@ function doPost(e) {
 
         this.sendStickerChat(config.stickerId);
       } else {
-        this.sendMessageChat("Счетчик не активирован в этом чате.");
+        this.sendMessageChat(messages.notActive);
       }
     });
 
@@ -61,10 +61,14 @@ function doPost(e) {
         var days = moment().diff(chatDto.timestamp, 'days');
         var date = moment(chatDto.timestamp).format(config.dateFormat);
 
-        this.sendMessageChat("Дней без токса: "+ days +"\nМакс. дней без токса: "+ chatDto.maxDays +"\nДата последнего токса: " + date);
+        this.sendMessageChat(messages.stat.format(days, chatDto.maxDays, date));
       } else {
-        this.sendMessageChat("Счетчик не активирован в этом чате.");
+        this.sendMessageChat(messages.notActive);
       }
+    });
+
+    bus.on(/\/help/, function () {
+      this.sendMessageChat(messages.help);
     });
 
     client.register(bus);

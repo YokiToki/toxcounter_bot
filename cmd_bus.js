@@ -33,5 +33,5 @@ CmdBus.prototype.handle = function (client) {
       return cmd.callback.apply(client, tokens.splice(1));
     }
   }
-  return client.sendMessage("На глаза себе нажми, пидор!");
+  return client.sendMessage(messages.help);
 };

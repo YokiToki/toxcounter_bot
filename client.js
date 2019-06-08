@@ -55,6 +55,8 @@ TelegramClient.prototype.request = function (method, data) {
 
 /**
  * @see https://core.telegram.org/bots/api#sendmessage
+ * @param text
+ * @returns {boolean|any}
  */
 TelegramClient.prototype.sendMessage = function (text) {
   return this.request('sendMessage', {
@@ -65,6 +67,8 @@ TelegramClient.prototype.sendMessage = function (text) {
 
 /**
  * @see https://core.telegram.org/bots/api#sendmessage
+ * @param text
+ * @returns {boolean|any}
  */
 TelegramClient.prototype.sendMessageChat = function (text) {
   return this.request('sendMessage', {
@@ -75,6 +79,8 @@ TelegramClient.prototype.sendMessageChat = function (text) {
 
 /**
  * @see https://core.telegram.org/bots/api#sendsticker
+ * @param sticker
+ * @returns {boolean|any}
  */
 TelegramClient.prototype.sendStickerChat = function (sticker) {
   return this.request('sendSticker', {
@@ -85,6 +91,7 @@ TelegramClient.prototype.sendStickerChat = function (sticker) {
 
 /**
  * @see https://core.telegram.org/bots/api#getwebhookinfo
+ * @returns {boolean|any}
  */
 TelegramClient.prototype.getWebhookInfo = function () {
   return this.request('getWebhookInfo', {});
@@ -92,6 +99,8 @@ TelegramClient.prototype.getWebhookInfo = function () {
 
 /**
  * @see https://core.telegram.org/bots/api#setwebhook
+ * @param url
+ * @returns {boolean|any}
  */
 TelegramClient.prototype.setWebhook = function (url) {
   return this.request('setWebhook', {url: url});
@@ -99,6 +108,7 @@ TelegramClient.prototype.setWebhook = function (url) {
 
 /**
  * @see https://core.telegram.org/bots/api#deletewebhook
+ * @returns {boolean|any}
  */
 TelegramClient.prototype.deleteWebhook = function () {
   return this.request('deleteWebhook', {});
@@ -106,6 +116,7 @@ TelegramClient.prototype.deleteWebhook = function () {
 
 /**
  * @see https://core.telegram.org/bots/api#getupdates
+ * @returns {boolean|any}
  */
 TelegramClient.prototype.getUpdates = function () {
   return this.request('getUpdates', {});
