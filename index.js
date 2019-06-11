@@ -38,12 +38,17 @@ function doPost(e) {
       const chatId = this.payload.message.chat.id;
       var chatDto = db.find(chatId);
       if (chatDto.chatId) {
-        var timestamp = moment(chatDto.timestamp);
-        var days = moment().diff(timestamp, 'days');
+        var timestamp = moment(chatDto.timestamp).zone('+0600').format(config.dateTimeFormat);
+        var days = moment().diff(moment(timestamp, config.dateTimeFormat), 'days');
+        var minutes = moment().diff(moment(timestamp, config.dateTimeFormat), 'minutes');
 
-        chatDto.timestamp = moment().format(config.dateTimeFormat);
+        chatDto.timestamp = moment(new Date()).format(config.dateTimeFormat);
         if (days > chatDto.maxDays) {
           chatDto.maxDays = days;
+        }
+
+        if (minutes > chatDto.maxMinutes) {
+          chatDto.maxMinutes = minutes;
         }
 
         db.update(chatDto);
@@ -58,10 +63,12 @@ function doPost(e) {
       const chatId = this.payload.message.chat.id;
       var chatDto = db.find(chatId);
       if (chatDto.chatId) {
-        var days = moment().diff(chatDto.timestamp, 'days');
-        var date = moment(chatDto.timestamp).format(config.dateFormat);
+        var timestamp = moment(chatDto.timestamp).zone('+0600').format(config.dateTimeFormat);
+        var days = moment().diff(moment(timestamp, config.dateTimeFormat), 'days');
+        var minutes = moment().diff(moment(timestamp, config.dateTimeFormat), 'minutes');
+        var date = moment(timestamp, config.dateTimeFormat).format(config.dateFormat);
 
-        this.sendMessageChat(messages.stat.format(days, chatDto.maxDays, date));
+        this.sendMessageChat(messages.stat.format(days, minutes, chatDto.maxDays || days, chatDto.maxMinutes || minutes, date));
       } else {
         this.sendMessageChat(messages.notActive);
       }

@@ -34,7 +34,7 @@ DB.prototype.insert = function (chatDto) {
   if (!chatDto.chatId) {
     return false;
   }
-  this.spreadsheet.appendRow([chatDto.chatId, chatDto.timestamp, chatDto.maxDays]);
+  this.spreadsheet.appendRow([chatDto.chatId, chatDto.timestamp, chatDto.maxDays, chatDto.maxMinutes]);
   return true;
 };
 
@@ -47,7 +47,7 @@ DB.prototype.update = function (chatDto) {
   if (!chatDto.row) {
     return false;
   }
-  const data = [chatDto.chatId, chatDto.timestamp, chatDto.maxDays];
+  const data = [chatDto.chatId, chatDto.timestamp, chatDto.maxDays, chatDto.maxMinutes];
   this.spreadsheet.getRange(chatDto.row, 1, 1, data.length).setValues([data]);
   return true;
 };
