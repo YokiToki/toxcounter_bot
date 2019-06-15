@@ -1,5 +1,5 @@
 /**
- * @param ssid
+ * @param ssid {String}
  * @constructor
  */
 function ChatRepository(ssid) {
@@ -10,7 +10,7 @@ ChatRepository.prototype = Object.create(DB.prototype);
 ChatRepository.prototype.constructor = ChatRepository;
 
 /**
- * @param conditions
+ * @param conditions {Object}
  * @returns {ChatDto}
  */
 ChatRepository.prototype.find = function (conditions) {
@@ -19,7 +19,7 @@ ChatRepository.prototype.find = function (conditions) {
 };
 
 /**
- * @param chatDto
+ * @param chatDto {ChatDto}
  * @returns {boolean}
  */
 ChatRepository.prototype.create = function (chatDto) {
@@ -31,7 +31,7 @@ ChatRepository.prototype.create = function (chatDto) {
 };
 
 /**
- * @param chatDto
+ * @param chatDto {ChatDto}
  * @returns {boolean}
  */
 ChatRepository.prototype.edit = function (chatDto) {
@@ -39,6 +39,6 @@ ChatRepository.prototype.edit = function (chatDto) {
     return false;
   }
   const data = [chatDto.chatId, chatDto.maxDays, chatDto.maxMinutes, chatDto.updatedAt];
-  this.update(data);
+  this.update(chatDto.row, data);
   return true;
 };

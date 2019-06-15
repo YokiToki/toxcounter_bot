@@ -1,5 +1,5 @@
 /**
- * @param ssid
+ * @param ssid {String}
  * @constructor
  */
 function UserRepository(ssid) {
@@ -19,7 +19,7 @@ UserRepository.prototype.find = function (conditions) {
 };
 
 /**
- * @param userDto
+ * @param userDto {UserDto}
  * @returns {boolean}
  */
 UserRepository.prototype.create = function (userDto) {
@@ -39,7 +39,7 @@ UserRepository.prototype.create = function (userDto) {
 };
 
 /**
- * @param userDto
+ * @param userDto {UserDto}
  * @returns {boolean}
  */
 UserRepository.prototype.edit = function (userDto) {
@@ -55,6 +55,6 @@ UserRepository.prototype.edit = function (userDto) {
     userDto.isBot,
     userDto.createdAt
   ];
-  this.update(data);
+  this.update(userDto.row, data);
   return true;
 };

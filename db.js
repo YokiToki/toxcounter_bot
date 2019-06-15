@@ -56,8 +56,7 @@ DB.prototype.one = function () {
 
 /**
  * @see https://developers.google.com/apps-script/reference/spreadsheet/sheet#appendrowrowcontents
- * @param data
- *
+ * @param data {Array}
  */
 DB.prototype.insert = function (data) {
   this.spreadsheet.appendRow(data);
@@ -66,10 +65,11 @@ DB.prototype.insert = function (data) {
 
 /**
  * @see https://developers.google.com/apps-script/reference/spreadsheet/sheet#getrangerow-column-numrows
- * @param data Array
+ * @param row {Number}
+ * @param data {Array}
  * @returns {DB}
  */
-DB.prototype.update = function (data) {
-  this.spreadsheet.getRange(chatDto.row, 1, 1, data.length).setValues([data]);
+DB.prototype.update = function (row, data) {
+  this.spreadsheet.getRange(row, 1, 1, data.length).setValues([data]);
   return this;
 };

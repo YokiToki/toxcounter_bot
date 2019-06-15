@@ -35,7 +35,7 @@ CmdBus.prototype.handle = function (client) {
       try {
         return cmd.callback.apply(client, tokens.splice(1));
       } catch (e) {
-        console.error('Error: ' + e);
+        console.error('Error: ', e, e.stack);
       }
     }
   }
