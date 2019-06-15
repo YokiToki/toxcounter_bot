@@ -18,7 +18,7 @@ mv config.js.example config.js
 Specify the `token` of the Telegram bot in `config.js`
 [https://core.telegram.org/bots/api](https://core.telegram.org/bots/api)
 
-Specify the ID of the google-table `ssid` in `config.js` used as database.
+Specify the ID of the google-table `chatDataSsid` and `userDataSsid` in `config.js` used as database.
 ![image](https://user-images.githubusercontent.com/1845813/59051046-2f453180-88b6-11e9-9753-2e26546a2647.png)
 
 ```

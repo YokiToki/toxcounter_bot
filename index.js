@@ -14,19 +14,23 @@ function doGet() {
  */
 function doPost(e) {
   if (e.postData.type === "application/json") {
-    const db = new DB(config.ssid);
+    const chatRepository = new ChatRepository(config.chatDataSsid);
+    const userRepository = new UserRepository(config.userDataSsid);
     const payload = JSON.parse(e.postData.contents);
     const client = new TelegramClient(config.url, config.token, payload);
     const bus = new CmdBus();
+    const userMiddleware = new UserMiddleware(payload, userRepository);
+
+    userMiddleware.handle();
 
     bus.on(/\/start/, function () {
       const chatId = this.payload.message.chat.id;
-      var chatDto = db.find(chatId);
+      var chatDto = chatRepository.find({chatId: chatId});
       if (!chatDto.chatId) {
         chatDto.chatId = chatId;
-        chatDto.timestamp = moment().format(config.dateTimeFormat);
+        chatDto.updatedAt = moment().format(config.dateTimeFormat);
 
-        db.insert(chatDto);
+        chatRepository.create(chatDto);
 
         this.sendMessageChat(messages.active);
       } else {
@@ -36,13 +40,13 @@ function doPost(e) {
 
     bus.on(/\/flush/, function () {
       const chatId = this.payload.message.chat.id;
-      var chatDto = db.find(chatId);
+      var chatDto = chatRepository.find({chatId: chatId});
       if (chatDto.chatId) {
-        var timestamp = moment(chatDto.timestamp).zone('+0600').format(config.dateTimeFormat);
+        var timestamp = moment(chatDto.updatedAt).zone('+0600').format(config.dateTimeFormat);
         var days = moment().diff(moment(timestamp, config.dateTimeFormat), 'days');
         var minutes = moment().diff(moment(timestamp, config.dateTimeFormat), 'minutes');
 
-        chatDto.timestamp = moment(new Date()).format(config.dateTimeFormat);
+        chatDto.updatedAt = moment(new Date()).format(config.dateTimeFormat);
         if (days > chatDto.maxDays) {
           chatDto.maxDays = days;
         }
@@ -51,7 +55,7 @@ function doPost(e) {
           chatDto.maxMinutes = minutes;
         }
 
-        db.update(chatDto);
+        chatRepository.edit(chatDto);
 
         this.sendStickerChat(config.stickerId);
       } else {
@@ -61,9 +65,9 @@ function doPost(e) {
 
     bus.on(/\/stat/, function () {
       const chatId = this.payload.message.chat.id;
-      var chatDto = db.find(chatId);
+      var chatDto = chatRepository.find({chatId: chatId});
       if (chatDto.chatId) {
-        var timestamp = moment(chatDto.timestamp).zone('+0600').format(config.dateTimeFormat);
+        var timestamp = moment(chatDto.updatedAt).zone('+0600').format(config.dateTimeFormat);
         var days = moment().diff(moment(timestamp, config.dateTimeFormat), 'days');
         var minutes = moment().diff(moment(timestamp, config.dateTimeFormat), 'minutes');
         var date = moment(timestamp, config.dateTimeFormat).format(config.dateFormat);
