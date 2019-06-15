@@ -18,7 +18,7 @@ mv config.js.example config.js
 Указать токен Telegram-бота `token` в файле `config.js`.
 [https://core.telegram.org/bots/api](https://core.telegram.org/bots/api)
 
-Указать идентификатор google-таблицы, `ssid` в файле `config.js`, используемой в качастве БД.
+Указать идентификатор google-таблицы, `chatDataSsid` и `userDataSsid` в файле `config.js`, используемой в качастве БД.
 ![image](https://user-images.githubusercontent.com/1845813/59051046-2f453180-88b6-11e9-9753-2e26546a2647.png)
 
 ```

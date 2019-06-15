@@ -18,7 +18,8 @@ CmdBus.prototype.on = function (regexp, callback) {
  * @returns {boolean}
  */
 CmdBus.prototype.condition = function (client) {
-  return client.payload.message.text.charAt(0) === '/';
+  const message = client.payload.message.text || '';
+  return message.charAt(0) === '/';
 };
 
 /**
@@ -26,11 +27,16 @@ CmdBus.prototype.condition = function (client) {
  * @returns {*}
  */
 CmdBus.prototype.handle = function (client) {
+  const message = client.payload.message.text || '';
   for (var i in this.commands) {
     var cmd = this.commands[i];
-    var tokens = cmd.regexp.exec(client.payload.message.text);
+    var tokens = cmd.regexp.exec(message);
     if (tokens != null) {
-      return cmd.callback.apply(client, tokens.splice(1));
+      try {
+        return cmd.callback.apply(client, tokens.splice(1));
+      } catch (e) {
+        console.error('Error: ' + e);
+      }
     }
   }
   return client.sendMessage(messages.help);
