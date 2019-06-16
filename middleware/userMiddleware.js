@@ -1,12 +1,13 @@
 var UserMiddleware = (function () {
 
   /**
-   * @param payload {Object}
+   * @param client {TelegramClient}
    * @param userRepository {UserRepository}
    * @constructor
    */
-  function UserMiddleware(payload, userRepository) {
-    this.payload = payload;
+  function UserMiddleware(client, userRepository) {
+    this.client = client;
+    this.payload = client.payload;
     this.userRepository = userRepository;
   }
 
@@ -33,25 +34,32 @@ var UserMiddleware = (function () {
    * Handle post request before command
    */
   UserMiddleware.prototype.handle = function () {
-    const chatId = this.payload.message.chat.id || null;
-    const userFrom = this.payload.message.from || null;
+    const message = this.payload.message || null;
+    if (message) {
+      const botInfo = this.client.getMe();
+      const chat = message.chat || null;
+      const chatId = chat.id || null;
+      const userFrom = message.from || null;
+      const replyToMessage = message.reply_to_message || null;
 
-    const replyToMessage = this.payload.message.reply_to_message || null;
+      const userNewChatParticipant = message.new_chat_participant || null;
 
-    const userNewChatParticipant = this.payload.message.new_chat_participant || null;
+      if (userFrom && userFrom.username !== botInfo.result.username) {
+        createUserIfNotExist.call(this, chatId, userFrom);
+      }
 
-    if (userFrom !== null) {
-      createUserIfNotExist.call(this, chatId, userFrom);
-    }
+      if (replyToMessage) {
+        const userReplyToChat = replyToMessage.chat || null;
+        const userReplyToChatId = userReplyToChat.id || null;
+        const userReplyTo = replyToMessage.from || null;
+        if (userReplyTo.username !== botInfo.result.username) {
+          createUserIfNotExist.call(this, userReplyToChatId, userReplyTo);
+        }
+      }
 
-    if (replyToMessage !== null) {
-      const userReplyToChatId = replyToMessage.chat.id || null;
-      const userReplyTo = replyToMessage.from || null;
-      createUserIfNotExist.call(this, userReplyToChatId, userReplyTo);
-    }
-
-    if (userNewChatParticipant !== null) {
-      createUserIfNotExist.call(this, chatId, userNewChatParticipant);
+      if (userNewChatParticipant && userNewChatParticipant.username !== botInfo.result.username) {
+        createUserIfNotExist.call(this, chatId, userNewChatParticipant);
+      }
     }
   };
 

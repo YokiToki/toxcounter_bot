@@ -19,7 +19,7 @@ function doPost(e) {
     const payload = JSON.parse(e.postData.contents);
     const client = new TelegramClient(config.url, config.token, payload);
     const bus = new CmdBus();
-    const userMiddleware = new UserMiddleware(payload, userRepository);
+    const userMiddleware = new UserMiddleware(client, userRepository);
 
     userMiddleware.handle();
 
@@ -76,6 +76,41 @@ function doPost(e) {
       } else {
         this.sendMessageChat(messages.notActive);
       }
+    });
+
+    bus.on(/\/tox(\S+)? ?(\S+)?/, function (bot, mention) {
+      const userFrom = this.payload.message.from;
+      const botInfo = this.getMe();
+
+      const chatId = this.payload.message.chat.id;
+      var userDto = mention !== undefined ?
+        userRepository.find({username: mention.replace('@', '')}) :
+        userRepository.getRandom(chatId);
+
+      if (userDto.username === botInfo.result.username) {
+        userDto = userRepository.find({username: userFrom.username});
+      }
+
+      if (userDto.row === null) {
+        this.sendMessageChat(messages.userNotActive, userFrom.username);
+        return;
+      }
+
+      const response = this.getChatMember(chatId, userDto.userId);
+
+      if (response === null) {
+        this.sendMessageChat(messages.userNotFound, userFrom.username);
+        return;
+      }
+
+      const toxService = new ToxService(
+        messages.tox.appeals,
+        messages.tox.bodies,
+        messages.tox.swearWords,
+        messages.tox.conclusions
+      );
+
+      this.sendMessageChat(toxService.get(userDto.username), userDto.username);
     });
 
     bus.on(/\/help/, function () {

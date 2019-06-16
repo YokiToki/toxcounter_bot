@@ -1,5 +1,5 @@
 /**
- * @param ssid {String}
+ * @param ssid {string}
  * @constructor
  */
 function ChatRepository(ssid) {

@@ -33,7 +33,8 @@ CmdBus.prototype.handle = function (client) {
     var tokens = cmd.regexp.exec(message);
     if (tokens != null) {
       try {
-        return cmd.callback.apply(client, tokens.splice(1));
+        const args = tokens.splice(1);
+        return cmd.callback.apply(client, args);
       } catch (e) {
         console.error('Error: ', e, e.stack);
       }

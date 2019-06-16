@@ -4,8 +4,19 @@
  */
 function DB(ssid) {
   this.spreadsheet = SpreadsheetApp.openById(ssid).getSheets()[0];
+  this.headers = null;
   this.data = null;
 }
+
+/**
+ * @returns {DB}
+ */
+DB.prototype.select = function () {
+  const data = this.spreadsheet.getDataRange().getValues();
+  this.headers = data.shift();
+  this.data = data;
+  return this;
+};
 
 /**
  * @see https://developers.google.com/apps-script/reference/spreadsheet/sheet#getdatarange
@@ -13,14 +24,12 @@ function DB(ssid) {
  * @returns {DB}
  */
 DB.prototype.findByCondition = function (conditions) {
-  const data = this.spreadsheet.getDataRange().getValues();
-  const headers = data.shift();
-
-  this.data = data.reduce(function (filtered, row, i) {
+  this.select();
+  this.data = this.data.reduce((function (filtered, row, i) {
     var columns = Object.keys(conditions);
     for (var j = 0; j < columns.length; j++) {
       var column = columns[j];
-      var columnIndex = headers.indexOf(column);
+      var columnIndex = this.headers.indexOf(column);
       if (columnIndex === -1) {
         return filtered;
       }
@@ -32,7 +41,7 @@ DB.prototype.findByCondition = function (conditions) {
     filtered.push(row);
 
     return filtered;
-  }, []);
+  }).bind(this), []);
 
   return this;
 };

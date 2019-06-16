@@ -1,5 +1,5 @@
 /**
- * @param ssid {String}
+ * @param ssid {string}
  * @constructor
  */
 function UserRepository(ssid) {
@@ -15,6 +15,15 @@ UserRepository.prototype.constructor = UserRepository;
  */
 UserRepository.prototype.find = function (conditions) {
   const value = this.findByCondition(conditions).one();
+  return new UserDto(value);
+};
+
+/**
+ * @returns {UserDto}
+ */
+UserRepository.prototype.getRandom = function (chatId) {
+  const values = this.findByCondition({chatId: chatId}).all();
+  const value = values[Math.floor(Math.random() * values.length)];
   return new UserDto(value);
 };
 
