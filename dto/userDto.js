@@ -9,9 +9,17 @@ function UserDto(params) {
   this.username = params[3] || null;
   this.firstName = params[4] || null;
   this.lastName = params[5] || null;
-  this.isBot = params[6] || null;
-  this.createdAt = params[7] || null;
+  this.isBot = params[6] || false;
+  this.toxCount = params[7] || null;
+  this.createdAt = params[8] || null;
 }
+
+/**
+ * @returns {int}
+ */
+UserDto.prototype.getToxCount = function () {
+  return parseInt(this.toxCount) || 0
+};
 
 /**
  * @returns {string|null}

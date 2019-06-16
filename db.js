@@ -14,7 +14,12 @@ function DB(ssid) {
 DB.prototype.select = function () {
   const data = this.spreadsheet.getDataRange().getValues();
   this.headers = data.shift();
-  this.data = data;
+  this.headers.unshift('row');
+  this.data = data.map(function (row, i) {
+    row.unshift(i + 2);
+    return row;
+  });
+
   return this;
 };
 
@@ -25,10 +30,11 @@ DB.prototype.select = function () {
  */
 DB.prototype.findByCondition = function (conditions) {
   this.select();
-  this.data = this.data.reduce((function (filtered, row, i) {
+  this.data = this.data.reduce((function (filtered, row) {
     var columns = Object.keys(conditions);
-    for (var j = 0; j < columns.length; j++) {
-      var column = columns[j];
+
+    for (var i = 0; i < columns.length; i++) {
+      var column = columns[i];
       var columnIndex = this.headers.indexOf(column);
       if (columnIndex === -1) {
         return filtered;
@@ -37,11 +43,26 @@ DB.prototype.findByCondition = function (conditions) {
         return filtered;
       }
     }
-    row.unshift(i + 2);
-    filtered.push(row);
 
+    filtered.push(row);
     return filtered;
   }).bind(this), []);
+
+  return this;
+};
+
+/**
+ * @returns {null|Array}
+ */
+DB.prototype.orderBy = function (column, direction) {
+  const columnIndex = this.headers.indexOf(column);
+  if (direction === undefined) {
+    direction = 'ASC';
+  }
+  this.data = this.data.sort(function(a, b){
+    var condition = direction === 'ASC' ? a[columnIndex] > b[columnIndex] : a[columnIndex] < b[columnIndex];
+    return a[columnIndex] === b[columnIndex] ? 0 : +(condition) || -1;
+  });
 
   return this;
 };

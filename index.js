@@ -60,6 +60,12 @@ function doPost(e) {
         }
 
         if (replyToMessage && replyToMessage.from.username !== botInfo.result.username) {
+          const lastToxUserDto = userRepository.find({chatId: chatId, userId: replyToMessage.from.id});
+          if (lastToxUserDto.row !== null) {
+            var toxCount = lastToxUserDto.getToxCount();
+            lastToxUserDto.toxCount = ++toxCount;
+            userRepository.edit(lastToxUserDto);
+          }
           chatDto.userLastToxId = replyToMessage.from.id;
         }
 
@@ -138,6 +144,18 @@ function doPost(e) {
       );
 
       this.sendMessageChat(toxService.get(userDto.username), userDto.username);
+    });
+
+    bus.on(/\/top/, function () {
+      const chatId = this.payload.message.chat.id;
+      var topMessage = messages.topTitle;
+      const userDtoList = userRepository.getListOrderBy(chatId, 'toxCount', 'DESC');
+      for (var i in userDtoList) {
+        var userDto = userDtoList[i];
+        topMessage += messages.topTemplate.format(parseInt(i)+1, userDto.firstName, userDto.lastName, userDto.getChatUsername(), userDto.getToxCount());
+      }
+
+      this.sendMessageChat(topMessage);
     });
 
     bus.on(/\/help/, function () {

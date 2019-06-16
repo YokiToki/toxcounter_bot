@@ -19,12 +19,26 @@ UserRepository.prototype.find = function (conditions) {
 };
 
 /**
+ * @param chatId
  * @returns {UserDto}
  */
 UserRepository.prototype.getRandom = function (chatId) {
   const values = this.findByCondition({chatId: chatId}).all();
   const value = values[Math.floor(Math.random() * values.length)];
   return new UserDto(value);
+};
+
+/**
+ * @param chatId
+ * @param column
+ * @param direction
+ * @returns {UserDto[]|Array}
+ */
+UserRepository.prototype.getListOrderBy = function (chatId, column, direction) {
+  const values = this.findByCondition({chatId: chatId}).orderBy(column, direction).all();
+  return values.map(function (value) {
+    return new UserDto(value);
+  });
 };
 
 /**
@@ -42,6 +56,7 @@ UserRepository.prototype.create = function (userDto) {
     userDto.firstName,
     userDto.lastName,
     userDto.isBot,
+    userDto.toxCount,
     userDto.createdAt
   ]);
   return true;
@@ -62,6 +77,7 @@ UserRepository.prototype.edit = function (userDto) {
     userDto.firstName,
     userDto.lastName,
     userDto.isBot,
+    userDto.toxCount,
     userDto.createdAt
   ];
   this.update(userDto.row, data);
