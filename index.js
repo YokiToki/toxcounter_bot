@@ -40,7 +40,11 @@ function doPost(e) {
 
     bus.on(/\/flush/, function () {
       const chatId = this.payload.message.chat.id;
+      const userFrom = this.payload.message.from;
+      const replyToMessage = this.payload.message.reply_to_message || null;
+      const botInfo = this.getMe();
       var chatDto = chatRepository.find({chatId: chatId});
+
       if (chatDto.chatId) {
         var timestamp = moment(chatDto.updatedAt).zone('+0600').format(config.dateTimeFormat);
         var days = moment().diff(moment(timestamp, config.dateTimeFormat), 'days');
@@ -55,6 +59,12 @@ function doPost(e) {
           chatDto.maxMinutes = minutes;
         }
 
+        if (replyToMessage && replyToMessage.from.username !== botInfo.result.username) {
+          chatDto.userLastToxId = replyToMessage.from.id;
+        }
+
+        chatDto.userLastFlushId = userFrom.id;
+
         chatRepository.edit(chatDto);
 
         this.sendStickerChat(config.stickerId);
@@ -66,23 +76,40 @@ function doPost(e) {
     bus.on(/\/stat/, function () {
       const chatId = this.payload.message.chat.id;
       var chatDto = chatRepository.find({chatId: chatId});
+
       if (chatDto.chatId) {
+        var lastFlushUser = messages.userNotAvailable;
+        var lastToxUser = messages.userNotAvailable;
         var timestamp = moment(chatDto.updatedAt).zone('+0600').format(config.dateTimeFormat);
         var days = moment().diff(moment(timestamp, config.dateTimeFormat), 'days');
         var minutes = moment().diff(moment(timestamp, config.dateTimeFormat), 'minutes');
         var date = moment(timestamp, config.dateTimeFormat).format(config.dateFormat);
+        if (chatDto.userLastFlushId) {
+          const lastFlushUserDto = userRepository.find({userId: chatDto.userLastFlushId});
+          if (lastFlushUserDto.row !== null) {
+            lastFlushUser = lastFlushUserDto.getChatUsername();
+          }
+        }
+        if (chatDto.userLastToxId) {
+          const lastToxUserDto = userRepository.find({userId: chatDto.userLastToxId});
+          if (lastToxUserDto.row !== null) {
+            lastToxUser = lastToxUserDto.getChatUsername();
+          }
+        } else if (lastFlushUser !== messages.userNotAvailable) {
+          lastToxUser = messages.userToxNotAvailable.format(lastFlushUser);
+        }
 
-        this.sendMessageChat(messages.stat.format(days, minutes, chatDto.maxDays || days, chatDto.maxMinutes || minutes, date));
+        this.sendMessageChat(messages.stat.format(days, minutes, chatDto.maxDays || days, chatDto.maxMinutes || minutes, date, lastFlushUser, lastToxUser));
       } else {
         this.sendMessageChat(messages.notActive);
       }
     });
 
     bus.on(/\/tox(\S+)? ?(\S+)?/, function (bot, mention) {
+      const chatId = this.payload.message.chat.id;
       const userFrom = this.payload.message.from;
       const botInfo = this.getMe();
 
-      const chatId = this.payload.message.chat.id;
       var userDto = mention !== undefined ?
         userRepository.find({username: mention.replace('@', '')}) :
         userRepository.getRandom(chatId);

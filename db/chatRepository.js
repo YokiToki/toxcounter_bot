@@ -26,7 +26,14 @@ ChatRepository.prototype.create = function (chatDto) {
   if (!chatDto.chatId) {
     return false;
   }
-  this.insert([chatDto.chatId, chatDto.maxDays, chatDto.maxMinutes, chatDto.updatedAt]);
+  this.insert([
+    chatDto.chatId,
+    chatDto.userLastToxId,
+    chatDto.userLastFlushId,
+    chatDto.maxDays,
+    chatDto.maxMinutes,
+    chatDto.updatedAt
+  ]);
   return true;
 };
 
@@ -38,7 +45,14 @@ ChatRepository.prototype.edit = function (chatDto) {
   if (!chatDto.row) {
     return false;
   }
-  const data = [chatDto.chatId, chatDto.maxDays, chatDto.maxMinutes, chatDto.updatedAt];
+  const data = [
+    chatDto.chatId,
+    chatDto.userLastToxId,
+    chatDto.userLastFlushId,
+    chatDto.maxDays,
+    chatDto.maxMinutes,
+    chatDto.updatedAt
+  ];
   this.update(chatDto.row, data);
   return true;
 };

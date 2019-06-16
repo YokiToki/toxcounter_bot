@@ -12,3 +12,13 @@ function UserDto(params) {
   this.isBot = params[6] || null;
   this.createdAt = params[7] || null;
 }
+
+/**
+ * @returns {string|null}
+ */
+UserDto.prototype.getChatUsername = function () {
+  if (this.username !== null) {
+    return '@' + this.username;
+  }
+  return null;
+};
