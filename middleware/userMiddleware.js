@@ -17,8 +17,8 @@ var UserMiddleware = (function () {
    */
   function creatOrUpdate(chatId, user) {
     var userDto = this.userRepository.find({userId: user.id, chatId: chatId});
-    var username = user.username;
-    var firstName = user.first_name;
+    var username = user.username || null;
+    var firstName = user.first_name || null;
     var lastName = user.last_name || null;
 
     if (userDto.row === null) {
