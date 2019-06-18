@@ -22,11 +22,10 @@ UserDto.prototype.getToxCount = function () {
 };
 
 /**
- * @returns {string|null}
+ * @returns {string}
  */
-UserDto.prototype.getChatUsername = function () {
-  if (this.username !== null) {
-    return '@' + this.username;
-  }
-  return null;
+UserDto.prototype.getFullName = function () {
+  return [this.firstName, this.lastName].filter(function (value) {
+    return value;
+  }).join(' ');
 };

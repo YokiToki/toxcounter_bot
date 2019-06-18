@@ -67,6 +67,8 @@ function doPost(e) {
             userRepository.edit(lastToxUserDto);
           }
           chatDto.userLastToxId = replyToMessage.from.id;
+        } else {
+          chatDto.userLastToxId = null;
         }
 
         chatDto.userLastFlushId = userFrom.id;
@@ -93,13 +95,13 @@ function doPost(e) {
         if (chatDto.userLastFlushId) {
           const lastFlushUserDto = userRepository.find({userId: chatDto.userLastFlushId});
           if (lastFlushUserDto.row !== null) {
-            lastFlushUser = lastFlushUserDto.getChatUsername();
+            lastFlushUser = lastFlushUserDto.getFullName();
           }
         }
         if (chatDto.userLastToxId) {
           const lastToxUserDto = userRepository.find({userId: chatDto.userLastToxId});
           if (lastToxUserDto.row !== null) {
-            lastToxUser = lastToxUserDto.getChatUsername();
+            lastToxUser = lastToxUserDto.getFullName();
           }
         } else if (lastFlushUser !== messages.userNotAvailable) {
           lastToxUser = messages.userToxNotAvailable.format(lastFlushUser);
@@ -152,7 +154,7 @@ function doPost(e) {
       const userDtoList = userRepository.getListOrderBy(chatId, 'toxCount', 'DESC');
       for (var i in userDtoList) {
         var userDto = userDtoList[i];
-        topMessage += messages.topTemplate.format(parseInt(i)+1, userDto.firstName, userDto.lastName, userDto.getChatUsername(), userDto.getToxCount());
+        topMessage += messages.topTemplate.format(parseInt(i)+1, userDto.getFullName(), userDto.username, userDto.getToxCount());
       }
 
       this.sendMessageChat(topMessage);

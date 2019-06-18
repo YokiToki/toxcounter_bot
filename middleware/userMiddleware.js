@@ -15,18 +15,28 @@ var UserMiddleware = (function () {
    * @param chatId
    * @param user
    */
-  function createUserIfNotExist(chatId, user) {
+  function creatOrUpdate(chatId, user) {
     var userDto = this.userRepository.find({userId: user.id, chatId: chatId});
+    var username = user.username;
+    var firstName = user.first_name;
+    var lastName = user.last_name || null;
+
     if (userDto.row === null) {
       userDto.userId = user.id;
       userDto.chatId = chatId;
-      userDto.username = user.username;
-      userDto.firstName = user.first_name;
-      userDto.lastName = user.last_name || null;
+      userDto.username = username;
+      userDto.firstName = firstName;
+      userDto.lastName = lastName;
       userDto.isBot = user.is_bot;
       userDto.createdAt = moment().format(config.dateTimeFormat);
 
       this.userRepository.create(userDto);
+    } else if (userDto.username !== username || userDto.firstName !== firstName || userDto.lastName !== lastName) {
+      userDto.username = username;
+      userDto.firstName = firstName;
+      userDto.lastName = lastName;
+
+      this.userRepository.edit(userDto);
     }
   }
 
@@ -45,7 +55,7 @@ var UserMiddleware = (function () {
       const userNewChatParticipant = message.new_chat_participant || null;
 
       if (userFrom && userFrom.username !== botInfo.result.username) {
-        createUserIfNotExist.call(this, chatId, userFrom);
+        creatOrUpdate.call(this, chatId, userFrom);
       }
 
       if (replyToMessage) {
@@ -53,12 +63,12 @@ var UserMiddleware = (function () {
         const userReplyToChatId = userReplyToChat.id || null;
         const userReplyTo = replyToMessage.from || null;
         if (userReplyTo.username !== botInfo.result.username) {
-          createUserIfNotExist.call(this, userReplyToChatId, userReplyTo);
+          creatOrUpdate.call(this, userReplyToChatId, userReplyTo);
         }
       }
 
       if (userNewChatParticipant && userNewChatParticipant.username !== botInfo.result.username) {
-        createUserIfNotExist.call(this, chatId, userNewChatParticipant);
+        creatOrUpdate.call(this, chatId, userNewChatParticipant);
       }
     }
   };
