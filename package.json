@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "push": "clasp push",
-    "deploy": "clasp push"
+    "deploy": "clasp deploy"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "MIT"
 }
