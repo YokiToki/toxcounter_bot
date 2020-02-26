@@ -18,8 +18,9 @@ CmdBus.prototype.on = function (regexp, callback) {
  * @returns {boolean}
  */
 CmdBus.prototype.condition = function (client) {
-  const message = client.payload.message.text || '';
-  return message.charAt(0) === '/';
+  const message = client.payload.message || {};
+  const text = message.text || '';
+  return text.charAt(0) === '/';
 };
 
 /**
